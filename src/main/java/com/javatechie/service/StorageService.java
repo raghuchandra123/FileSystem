@@ -1,9 +1,7 @@
 package com.javatechie.service;
 
 import com.javatechie.entity.FileData;
-import com.javatechie.entity.ImageData;
 import com.javatechie.respository.FileDataRepository;
-import com.javatechie.respository.StorageRepository;
 import com.javatechie.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,29 +16,29 @@ import java.util.Optional;
 public class StorageService {
 
     @Autowired
-    private StorageRepository repository;
+    private FileDataRepository fileDataRepository;
 
     @Autowired
-    private FileDataRepository fileDataRepository;
+    private AWSStorageService awsStorageService;
 
     private final String FOLDER_PATH="/Users/javatechie/Desktop/MyFIles/";
 
-    public String uploadImage(MultipartFile file) throws IOException {
-        ImageData imageData = repository.save(ImageData.builder()
+    public String uploadImage(MultipartFile file) {
+        FileData fileData = fileDataRepository.save(FileData.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
-                .imageData(ImageUtils.compressImage(file.getBytes())).build());
-        if (imageData != null) {
-            return "file uploaded successfully : " + file.getOriginalFilename();
-        }
-        return null;
+                .size(file.getSize())
+                .time(System.currentTimeMillis())
+                .build());
+
+        return awsStorageService.uploadFile(fileData.getId(), file);
     }
 
 
 
     public byte[] downloadImage(String fileName) {
-        Optional<ImageData> dbImageData = repository.findByName(fileName);
-        byte[] images = ImageUtils.decompressImage(dbImageData.get().getImageData());
+        //Optional<ImageData> dbImageData = repository.findByName(fileName);
+        byte[] images = new byte[1];//ImageUtils.decompressImage(dbImageData.get().getImageData());
         return images;
     }
 
@@ -48,23 +46,23 @@ public class StorageService {
     public String uploadImageToFileSystem(MultipartFile file) throws IOException {
         String filePath=FOLDER_PATH+file.getOriginalFilename();
 
-        FileData fileData=fileDataRepository.save(FileData.builder()
-                .name(file.getOriginalFilename())
-                .type(file.getContentType())
-                .filePath(filePath).build());
+        //FileData fileData=fileDataRepository.save(FileData.builder()
+        //        .name(file.getOriginalFilename())
+        //        .type(file.getContentType())
+        //        .filePath(filePath).build());
 
         file.transferTo(new File(filePath));
 
-        if (fileData != null) {
-            return "file uploaded successfully : " + filePath;
-        }
+        //if (fileData != null) {
+        //    return "file uploaded successfully : " + filePath;
+        //}
         return null;
     }
 
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
-        Optional<FileData> fileData = fileDataRepository.findByName(fileName);
-        String filePath=fileData.get().getFilePath();
-        byte[] images = Files.readAllBytes(new File(filePath).toPath());
+        //Optional<FileData> fileData = fileDataRepository.findByName(fileName);
+        //String filePath=fileData.get().getFilePath();
+        byte[] images = new byte[1];//Files.readAllBytes(new File(filePath).toPath());
         return images;
     }
 

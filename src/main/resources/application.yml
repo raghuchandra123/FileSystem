@@ -1,0 +1,16 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAQJV2JUN6YLQB7BF7
+      secret-key: 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
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: raghufilestorage
+
+server:
+  port: 9090

@@ -20,5 +20,6 @@ public class FileData {
 
     private String name;
     private String type;
-    private String filePath;
+    private Long size;
+    private Long time;
 }

@@ -10,26 +10,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/files")
 public class StorageServiceApplication {
 
 	@Autowired
 	private StorageService service;
 
-	@PostMapping
-	public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
-		String uploadImage = service.uploadImage(file);
+	@PostMapping("/upload")
+	public ResponseEntity<?> uploadImage(@RequestParam("file")MultipartFile file) {
+		String fileId = service.uploadImage(file);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(uploadImage);
+				.body(fileId);
 	}
 
-	@GetMapping("/{fileName}")
-	public ResponseEntity<?> downloadImage(@PathVariable String fileName){
-		byte[] imageData=service.downloadImage(fileName);
+	@GetMapping("/{fileId}")
+	public ResponseEntity<?> downloadImage(@PathVariable String fileId){
+		byte[] imageData=service.downloadImage(fileId);
 		return ResponseEntity.status(HttpStatus.OK)
 				.contentType(MediaType.valueOf("image/png"))
 				.body(imageData);
@@ -37,16 +37,16 @@ public class StorageServiceApplication {
 	}
 
 
-	@PostMapping("/fileSystem")
-	public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image")MultipartFile file) throws IOException {
-		String uploadImage = service.uploadImageToFileSystem(file);
+	@PutMapping("/{fileId}")
+	public ResponseEntity<?> updateFile(@PathVariable String fileId, @RequestParam("file")MultipartFile file) throws FileNotFoundException {
+		String uploadImage = ""; //service.uploadImageToFileSystem(file);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(uploadImage);
 	}
 
-	@GetMapping("/fileSystem/{fileName}")
-	public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileName) throws IOException {
-		byte[] imageData=service.downloadImageFromFileSystem(fileName);
+	@DeleteMapping("/{fileId}")
+	public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileId) throws FileNotFoundException {
+		byte[] imageData = new byte[0]; //service.downloadImageFromFileSystem(fileId);
 		return ResponseEntity.status(HttpStatus.OK)
 				.contentType(MediaType.valueOf("image/png"))
 				.body(imageData);
