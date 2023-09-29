@@ -1,4 +1,4 @@
-package com.javatechie.service;
+package com.typeface.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;

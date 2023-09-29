@@ -1,6 +1,6 @@
-package com.javatechie.respository;
+package com.typeface.respository;
 
-import com.javatechie.entity.FileData;
+import com.typeface.entity.FileData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

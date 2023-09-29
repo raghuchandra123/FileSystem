@@ -1,6 +1,6 @@
-package com.javatechie;
+package com.typeface;
 
-import com.javatechie.service.StorageService;
+import com.typeface.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,28 +28,25 @@ public class StorageServiceApplication {
 	}
 
 	@GetMapping("/{fileId}")
-	public ResponseEntity<?> downloadImage(@PathVariable String fileId){
-		byte[] imageData=service.downloadImage(fileId);
+	public ResponseEntity<?> downloadImage(@PathVariable Integer fileId) {
+		byte[] imageData=service.downloadImage(fileId.toString());
 		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.valueOf("image/png"))
+				.contentType(MediaType.parseMediaType(service.getMediaType(fileId.toString())))
 				.body(imageData);
-
 	}
 
 
 	@PutMapping("/{fileId}")
-	public ResponseEntity<?> updateFile(@PathVariable String fileId, @RequestParam("file")MultipartFile file) throws FileNotFoundException {
-		String uploadImage = ""; //service.uploadImageToFileSystem(file);
+	public ResponseEntity<?> updateFile(@PathVariable String fileId, @RequestParam("file")MultipartFile file) {
+		String uploadImage = service.updateFile(Long.parseLong(fileId), file);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(uploadImage);
 	}
 
 	@DeleteMapping("/{fileId}")
-	public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileId) throws FileNotFoundException {
-		byte[] imageData = new byte[0]; //service.downloadImageFromFileSystem(fileId);
-		return ResponseEntity.status(HttpStatus.OK)
-				.contentType(MediaType.valueOf("image/png"))
-				.body(imageData);
+	public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileId) {
+		service.deleteFile(fileId);
+		return ResponseEntity.ok("Success");
 
 	}
 

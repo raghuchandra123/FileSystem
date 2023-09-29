@@ -1,4 +1,4 @@
-package com.javatechie.util;
+package com.typeface.util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
